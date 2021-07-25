@@ -8,16 +8,16 @@ import org.lalaLand.bo.Utilisateur;
 import org.lalaLand.businessException.BusinessException;
 
 public class UtilisateurDAOJdbcImpl implements UtilisateurDAO {
-	
+
 	/**
-	 * Constantes des requêtes SQL 
+	 * Constantes des requêtes SQL
 	 */
-	private static final String TEST_CONNEXION_UTILISATEUR="SELECT id, login,password FROM UTILISATEUR WHERE login=? AND password=?;";
-	private static final String SELECT_UTILISATEUR_BY_LOGIN="SELECT ut.login, ut.password FROM UTILISATEUR ut WHERE ut.login=?";
+	private static final String TEST_CONNEXION_UTILISATEUR = "SELECT id, login,password FROM UTILISATEUR WHERE login=? AND password=?;";
+	private static final String SELECT_UTILISATEUR_BY_LOGIN = "SELECT ut.login, ut.password FROM UTILISATEUR ut WHERE ut.login=?";
 
 	@Override
 	public void creerUtilisateur(Utilisateur utilisateur) throws BusinessException {
-		
+
 		// TODO Auto-generated method stub
 	}
 
@@ -26,33 +26,33 @@ public class UtilisateurDAOJdbcImpl implements UtilisateurDAO {
 	 */
 	@Override
 	public Utilisateur testConnexion(String login, String password) throws BusinessException {
-	
+
 		Utilisateur utilisateur = null;
 		BusinessException businessException = new BusinessException();
-		
-		if (login==null || password==null) {
-			
+
+		if (login == null || password == null) {
+
 			businessException.ajouterErreur(CodesResultatDAL.TEST_CONNEXION_NULL);
 			throw businessException;
-		} try (Connection cnx = ConnectionProvider.getConnection()){
+		}
+		try (Connection cnx = ConnectionProvider.getConnection()) {
 			try {
 				// Ouverture de la connexion
 				cnx.setAutoCommit(false);
 				PreparedStatement pstmt;
 				ResultSet rs;
-				
-				
+
 				pstmt = cnx.prepareStatement(TEST_CONNEXION_UTILISATEUR);
-				
+
 				pstmt.setString(1, login);
 				pstmt.setString(2, password);
-				
+
 				// Execution de la requête
 				rs = pstmt.executeQuery();
-				
-				if(rs.next()) {
+
+				if (rs.next()) {
 					utilisateur = new Utilisateur();
-					
+
 					utilisateur.setLogin(rs.getString(1));
 					utilisateur.setPassword(rs.getString(2));
 				} else {
@@ -61,18 +61,18 @@ public class UtilisateurDAOJdbcImpl implements UtilisateurDAO {
 				rs.close();
 				pstmt.close();
 				cnx.commit();
-				
-			} catch(Exception e) {
+
+			} catch (Exception e) {
 				e.printStackTrace();
 				cnx.rollback();
 				throw e;
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			businessException.ajouterErreur(CodesResultatDAL.INSERT_UTILISATEUR_ECHEC);
 			throw businessException;
 		}
-	
+
 		return utilisateur;
 	}
 
@@ -87,49 +87,50 @@ public class UtilisateurDAOJdbcImpl implements UtilisateurDAO {
 
 		Utilisateur utilisateur = null;
 		BusinessException businessException = new BusinessException();
-		
-		if (login==null) {
+
+		if (login == null) {
 			businessException.ajouterErreur(CodesResultatDAL.SELECT_UTILISATEUR_BY_PSEUDO_NULL);
 			throw businessException;
-			
-		} try(Connection cnx = ConnectionProvider.getConnection()) {
-			
+
+		}
+		try (Connection cnx = ConnectionProvider.getConnection()) {
+
 			try {
 				cnx.setAutoCommit(false);
 				PreparedStatement pstmt;
 				ResultSet rs;
 				pstmt = cnx.prepareStatement(SELECT_UTILISATEUR_BY_LOGIN);
-				
+
 				pstmt.setString(1, login);
-				
+
 				rs = pstmt.executeQuery();
-				
-				if(rs.next()) {
+
+				if (rs.next()) {
 					utilisateur = new Utilisateur();
-					
+
 					utilisateur.setLogin(rs.getString(1));
 					utilisateur.setPassword(rs.getString(2));
-					
+
 				} else {
 					System.out.println("Erreur de connexion utilisateur");
 				}
-				
+
 				rs.close();
 				pstmt.close();
 				cnx.commit();
-				
-			} catch(Exception e) {
+
+			} catch (Exception e) {
 				e.printStackTrace();
 				cnx.rollback();
 				throw e;
 			}
-			
-		} catch(Exception e) {
+
+		} catch (Exception e) {
 			e.printStackTrace();
 			businessException.ajouterErreur(CodesResultatDAL.SELECT_UTILISATEUR_BY_PSEUDO_NULL);
 			throw businessException;
 		}
-		
+
 		return utilisateur;
 	}
 

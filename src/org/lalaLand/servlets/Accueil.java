@@ -20,43 +20,37 @@ import org.lalaLand.businessException.BusinessException;
 @WebServlet("/Accueil")
 public class Accueil extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-   
-    public Accueil() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
+	public Accueil() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
 		PageManager pageManager = BLLFactory.getPageBLL();
-		System.out.println("je suis dans la servlet Accueil");
 
-		
 		// Récupération de la page numéro 1 dans la bdd
 		getPageById(request, pageManager);
-		
+
 		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/accueil.jsp");
-		
+
 		rd.forward(request, response);
-		
 
 	}
 
-
 	/**
 	 * Récupération des informations de la page
+	 * 
 	 * @param request
 	 * @param pageManager
 	 */
 	private void getPageById(HttpServletRequest request, PageManager pageManager) {
 		try {
-			Page page; 
+			Page page;
 			int no_page = 1;
 			page = pageManager.selectPageByID(no_page);
-			System.out.println("le titre de la page = "+page.getNbHabitants());
-			System.out.println("le titre de la page = "+page.getId());
 			request.setAttribute("page", page);
 		} catch (BusinessException e) {
 			// TODO Auto-generated catch block
@@ -65,9 +59,11 @@ public class Accueil extends HttpServlet {
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
